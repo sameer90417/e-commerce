@@ -8,6 +8,7 @@ import { useFormik } from "formik";
 import * as yup from "yup";
 import { filterFormicErrors } from "@/app/utils/formikHelpers";
 import { toast } from "react-toastify";
+import Link from "next/link";
 
 const validationSchema = yup.object().shape({
   name: yup.string().required("Name is required"),
@@ -48,6 +49,11 @@ export default function SignUp() {
   const formErrors: string[] = filterFormicErrors(errors, touched, values);
 
   const { name, email, password } = values;
+  type valueKeys = keyof typeof values;
+
+  const error = (name: valueKeys) => {
+    return errors[name] && touched[name] ? true : false;
+  };
 
   return (
     <AuthFormContainer title="Create New Account" onSubmit={handleSubmit}>
@@ -57,6 +63,7 @@ export default function SignUp() {
         onChange={handleChange}
         value={name}
         onBlur={handleBlur}
+        error={error('name')}
         crossOrigin={undefined}
         onPointerEnterCapture={undefined}
         onPointerLeaveCapture={undefined}
@@ -67,6 +74,7 @@ export default function SignUp() {
         onBlur={handleBlur}
         onChange={handleChange}
         value={email}
+        error={error('email')}
         crossOrigin={undefined}
         onPointerEnterCapture={undefined}
         onPointerLeaveCapture={undefined}
@@ -78,6 +86,7 @@ export default function SignUp() {
         type="password"
         value={password}
         onChange={handleChange}
+        error={error('password')}
         crossOrigin={undefined}
         onPointerEnterCapture={undefined}
         onPointerLeaveCapture={undefined}
@@ -92,6 +101,10 @@ export default function SignUp() {
       >
         Sign up
       </Button>
+      <div className="flex items-center justify-between">
+        <Link href="/auth/signin">Sign in</Link>
+        <Link href="/auth/forget-password">Forget password</Link>
+      </div>
       <div className="">
         {formErrors.map((err) => {
           return (
