@@ -5,7 +5,7 @@ import { SignInCredentials } from "./app/types";
 const authConfig: NextAuthConfig = {
   providers: [
     CredentialsProvider({
-      type: "credentials",
+      name: "Credentials",
       credentials: {},
       async authorize(credentials, request) {
         const { email, password } = credentials as SignInCredentials;
