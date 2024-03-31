@@ -5,6 +5,7 @@ import { NextResponse } from "next/server";
 import crypto from "crypto";
 import nodemailer from "nodemailer";
 import startDb from "@/app/lib/db";
+import { sendEmail } from "@/app/lib/email";
 
 export const POST = async (req: Request) => {
   try {
@@ -30,25 +31,19 @@ export const POST = async (req: Request) => {
     // send the link to email
     const resetPassLink = `${process.env.PASSWORD_RESET_URL}?token=${token}&userId=${user._id}`;
 
-    const transport = nodemailer.createTransport({
-      host: "sandbox.smtp.mailtrap.io",
-      port: 2525,
-      auth: {
-        user: "192561666499d0",
-        pass: "6cfa5a173259f7",
-      },
-    });
-
-    await transport.sendMail({
-      from: "verification@ecommerce.com",
-      to: user.email,
-      html: `<h2>Please verify your email by clicking on <a href="${resetPassLink}" >this link</a> to reset your password.</h2>`,
+    await sendEmail({
+      profile: { name: user.name, email: user.email },
+      subject: "forget-password",
+      linkUrl: resetPassLink,
     });
 
     return NextResponse.json({
       message: "Please check your email!",
     });
   } catch (error) {
-    return NextResponse.json({ error: (error as any).message }, { status : 500 });
+    return NextResponse.json(
+      { error: (error as any).message },
+      { status: 500 }
+    );
   }
 };
