@@ -26,6 +26,7 @@ export const POST = async (req: Request) => {
     user: {
       id: user._id.toString(),
       name: user.name,
+      email: user.email,
       avatar: user.avatar?.url,
       role: user.role,
       verified: user.verified
