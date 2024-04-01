@@ -23,12 +23,12 @@ export default function page(props: Props) {
       if(res.ok){
         // success
         toast.success(message)
-        router.replace("/");
       }
-  
+      
       if(!res.ok && error){
         toast.error(error)
       }
+      router.replace("/");
     });
   }, []);
 
