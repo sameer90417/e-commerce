@@ -1,7 +1,6 @@
 import NextAuth, { NextAuthConfig } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { SessionUserProfile, SignInCredentials } from "./app/types";
-
 declare module 'next-auth' {
   interface Session {
     user : SessionUserProfile
@@ -29,8 +28,8 @@ const authConfig: NextAuthConfig = {
         ).then(async (res) => await res.json());
 
         if (error) return null;
-        return { id: user.id };
-      },
+        return user;
+      },  
     }),
   ],
   callbacks: {
@@ -38,7 +37,7 @@ const authConfig: NextAuthConfig = {
       if(params.user){
         params.token = {...params.token, ...params.user};
       }
-        return params.token
+      return params.token
     },
     async session(params) {
       const user = params.token as typeof params.token & SessionUserProfile;
@@ -47,16 +46,17 @@ const authConfig: NextAuthConfig = {
           id : user.id,
           name : user.name,
           email : user.email,
+          role : user.role,
           avatar : user.avatar,
           verified : user.verified
         };
       }
-        return params.session
+      return params.session
     },
   }
 };
 
 export const {
   auth,
-  handlers: { GET, POST },
+  handlers: { GET, POST }
 } = NextAuth(authConfig);
